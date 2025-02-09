@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Factura General - Reservación #<%= @booking.id %></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag :app %>
+
+  <style>
+    @media print {
+      .no-print {
+        display: none;
+      }
+      body {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body class="bg-white min-h-screen">
+  <div class="max-w-4xl mx-auto p-8">
+    <!-- Botón de impresión -->
+    <div class="mb-8 no-print flex justify-end">
+      <button onclick="window.print()" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd"/>
+        </svg>
+        Imprimir
+      </button>
+    </div>
+
+    <!-- Encabezado -->
+    <div class="border-b pb-8 mb-8">
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-4xl font-bold text-gray-900">DRIVANA</h1>
+          <p class="text-gray-600 mt-2">Factura General de Reservación</p>
+        </div>
+        <div class="text-right">
+          <h2 class="text-2xl font-semibold text-gray-900">Reservación #<%= @booking.id %></h2>
+          <p class="text-gray-600 mt-1">
+            Fecha de Emisión: <%= l Time.current, format: :long %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información del Cliente y Vehículo -->
+    <div class="grid grid-cols-2 gap-8 mb-8">
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Información del Cliente</h3>
+        <p class="text-gray-600">
+          <%= @booking.driver.email %><br>
+          ID Cliente: <%= @booking.driver.id %>
+        </p>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Información del Vehículo</h3>
+        <p class="text-gray-600">
+          <%= @booking.car.brand %> <%= @booking.car.model %><br>
+          Año: <%= @booking.car.year %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Detalles de la Reservación Original -->
+    <div class="mb-8">
+      <div class="bg-indigo-50 rounded-lg p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Reservación Original</h3>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <p class="text-gray-600">Período:</p>
+            <p class="font-semibold">
+              <%= l @booking.start_date, format: :long %> - <%= l @booking.end_date, format: :long %>
+            </p>
+          </div>
+          <div>
+            <p class="text-gray-600">Días:</p>
+            <p class="font-semibold"><%= (@booking.end_date.to_date - @booking.start_date.to_date).to_i %></p>
+          </div>
+        </div>
+
+        <!-- Tickets de la reservación original -->
+        <% if @booking.tickets.any? %>
+          <div class="overflow-x-auto">
+            <table class="table table-compact w-full">
+              <thead>
+                <tr>
+                  <th>ID Ticket</th>
+                  <th>Fecha</th>
+                  <th class="text-right">Subtotal</th>
+                  <th class="text-right">IVA</th>
+                  <th class="text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @booking.tickets.each do |ticket| %>
+                  <tr>
+                    <td>#<%= ticket.id %></td>
+                    <td><%= l ticket.issue_date, format: :short %></td>
+                    <td class="text-right"><%= ticket.subtotal_rent.format(symbol: true) %></td>
+                    <td class="text-right"><%= ticket.taxes.format(symbol: true) %></td>
+                    <td class="text-right font-semibold"><%= ticket.total_amount.format(symbol: true) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Extensiones -->
+      <% if @booking.booking_extensions.any? %>
+        <% @booking.booking_extensions.each_with_index do |extension, index| %>
+          <div class="bg-amber-50 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-semibold mb-4">Extensión #<%= index + 1 %></h3>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <p class="text-gray-600">Período:</p>
+                <p class="font-semibold">
+                  <%= l extension.start_date, format: :long %> - <%= l extension.end_date, format: :long %>
+                </p>
+              </div>
+              <div>
+                <p class="text-gray-600">Días:</p>
+                <p class="font-semibold"><%= (extension.end_date.to_date - extension.start_date.to_date).to_i %></p>
+              </div>
+            </div>
+
+            <!-- Tickets de la extensión -->
+            <% if extension.tickets.any? %>
+              <div class="overflow-x-auto">
+                <table class="table table-compact w-full">
+                  <thead>
+                    <tr>
+                      <th>ID Ticket</th>
+                      <th>Fecha</th>
+                      <th class="text-right">Subtotal</th>
+                      <th class="text-right">IVA</th>
+                      <th class="text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% extension.tickets.each do |ticket| %>
+                      <tr>
+                        <td>#<%= ticket.id %></td>
+                        <td><%= l ticket.issue_date, format: :short %></td>
+                        <td class="text-right"><%= ticket.subtotal_rent.format(symbol: true) %></td>
+                        <td class="text-right"><%= ticket.taxes.format(symbol: true) %></td>
+                        <td class="text-right font-semibold"><%= ticket.total_amount.format(symbol: true) %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Resumen Total -->
+    <div class="border-t pt-8">
+      <h3 class="text-xl font-bold mb-4">Resumen General</h3>
+      <table class="w-full">
+        <tr class="text-gray-600">
+          <td class="py-2">Subtotal Reservación Original</td>
+          <td class="text-right font-semibold">
+            <%= number_to_currency(@booking.tickets.sum(&:subtotal_rent)) %>
+          </td>
+        </tr>
+        <% if @booking.booking_extensions.any? %>
+          <tr class="text-gray-600">
+            <td class="py-2">Subtotal Extensiones</td>
+            <td class="text-right font-semibold">
+              <%= number_to_currency(@booking.booking_extensions.flat_map(&:tickets).sum(&:subtotal_rent)) %>
+            </td>
+          </tr>
+        <% end %>
+        <tr class="text-gray-600">
+          <td class="py-2">IVA Total (16%)</td>
+          <td class="text-right font-semibold">
+            <%= number_to_currency(@booking.tickets.sum(&:taxes) + @booking.booking_extensions.flat_map(&:tickets).sum(&:taxes)) %>
+          </td>
+        </tr>
+        <tr class="text-2xl font-bold border-t">
+          <td class="pt-4">Total General</td>
+          <td class="text-right pt-4">
+            <%= number_to_currency(@booking.tickets.sum(&:total_amount) + @booking.booking_extensions.flat_map(&:tickets).sum(&:total_amount)) %>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Pie de página -->
+    <div class="mt-16 text-center text-gray-500 text-sm">
+      <p>Gracias por confiar en Drivana</p>
+      <p class="mt-1">Este documento es un comprobante general de tu reservación y sus extensiones</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  car: one
+  user: one
+  total_price: MyString
+  daily_rate: MyString
+  status: 1
+  start_date: 2025-02-05 23:01:38
+  end_date: 2025-02-05 23:01:38
+
+two:
+  car: two
+  user: two
+  total_price: MyString
+  daily_rate: MyString
+  status: 1
+  start_date: 2025-02-05 23:01:38
+  end_date: 2025-02-05 23:01:38

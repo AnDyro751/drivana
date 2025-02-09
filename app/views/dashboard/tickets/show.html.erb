@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ticket #<%= @ticket.id %></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag :app %>
+
+  <style>
+    @media print {
+      .no-print {
+        display: none;
+      }
+      body {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body class="bg-white min-h-screen">
+  <div class="max-w-4xl mx-auto p-8">
+    <!-- Botón de impresión -->
+    <div class="mb-8 no-print flex justify-end">
+      <button onclick="window.print()" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd"/>
+        </svg>
+        Imprimir
+      </button>
+    </div>
+
+    <!-- Encabezado -->
+    <div class="border-b pb-8 mb-8">
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-4xl font-bold text-gray-900">DRIVANA</h1>
+          <p class="text-gray-600 mt-2">
+            <%= @ticket.ticketable_type == "BookingExtension" ? "Ticket de Extensión" : "Ticket de Reservación" %>
+          </p>
+        </div>
+        <div class="text-right">
+          <h2 class="text-2xl font-semibold text-gray-900">ID: <%= @ticket.id %></h2>
+          <p class="text-gray-600 mt-1">
+            Fecha: <%= l @ticket.issue_date, format: :long %>
+          </p>
+          <!-- Badge para diferenciar el tipo de ticket -->
+          <span class="<%= @ticket.ticketable_type == 'BookingExtension' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800' %> px-2 py-1 text-xs font-medium rounded-full mt-2 inline-block">
+            <%= @ticket.ticketable_type == "BookingExtension" ? "Extensión" : "Reserva Original" %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información del Cliente y Vehículo -->
+    <div class="grid grid-cols-2 gap-8 mb-8">
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Información del Cliente</h3>
+        <p class="text-gray-600">
+          <%= @ticket.ticketable.driver.email %><br>
+          ID Cliente: <%= @ticket.ticketable.driver.id %>
+        </p>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Información del Vehículo</h3>
+        <p class="text-gray-600">
+          <%= @ticket.ticketable.car.brand %> <%= @ticket.ticketable.car.model %><br>
+          Año: <%= @ticket.ticketable.car.year %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Detalles de la Reservación -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">
+        <%= @ticket.ticketable_type == "BookingExtension" ? "Detalles de la Extensión" : "Detalles de la Reservación" %>
+      </h3>
+      <div class="bg-gray-50 rounded-lg p-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-gray-600">Fecha de Inicio:</p>
+            <p class="font-semibold"><%= l @ticket.ticketable.start_date, format: :long %></p>
+          </div>
+          <div>
+            <p class="text-gray-600">Fecha de Fin:</p>
+            <p class="font-semibold"><%= l @ticket.ticketable.end_date, format: :long %></p>
+          </div>
+          <div>
+            <p class="text-gray-600">Días de Renta:</p>
+            <p class="font-semibold"><%= @ticket.rental_days %></p>
+          </div>
+          <div>
+            <p class="text-gray-600">Tarifa Diaria:</p>
+            <p class="font-semibold"><%= @ticket.daily_rate.format(symbol: true) %></p>
+          </div>
+        </div>
+        
+        <% if @ticket.ticketable_type == "BookingExtension" %>
+          <div class="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+            <p class="text-amber-800 font-medium">Extensión de la Reservación #<%= @ticket.ticketable.booking_id %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Resumen de Costos -->
+    <div class="border-t pt-8">
+      <table class="w-full">
+        <tr class="text-gray-600">
+          <td class="py-2">Subtotal Renta</td>
+          <td class="text-right font-semibold"><%= @ticket.subtotal_rent.format(symbol: true) %></td>
+        </tr>
+        <% if @ticket.additional_charges.positive? %>
+          <tr class="text-gray-600">
+            <td class="py-2">Cargos Adicionales</td>
+            <td class="text-right font-semibold"><%= @ticket.additional_charges.format(symbol: true) %></td>
+          </tr>
+        <% end %>
+        <% if @ticket.discounts.positive? %>
+          <tr class="text-gray-600">
+            <td class="py-2">Descuentos</td>
+            <td class="text-right font-semibold text-green-600">-<%= @ticket.discounts.format(symbol: true) %></td>
+          </tr>
+        <% end %>
+        <tr class="text-gray-600">
+          <td class="py-2">IVA (16%)</td>
+          <td class="text-right font-semibold"><%= @ticket.taxes.format(symbol: true) %></td>
+        </tr>
+        <tr class="text-xl font-bold">
+          <td class="pt-4">Total</td>
+          <td class="text-right pt-4"><%= @ticket.total_amount.format(symbol: true) %></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Pie de página -->
+    <div class="mt-16 text-center text-gray-500 text-sm">
+      <p>Gracias por confiar en Drivana</p>
+      <p class="mt-1">Este documento es un comprobante de tu <%= @ticket.ticketable_type == "BookingExtension" ? "extensión" : "reservación" %></p>
+    </div>
+  </div>
+</body>
+</html> 

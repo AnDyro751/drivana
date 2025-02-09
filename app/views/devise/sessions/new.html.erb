@@ -1,0 +1,71 @@
+<div class="min-h-screen bg-gradient-to-b from-violet-100 to-white flex flex-col items-center justify-center p-4">
+  <div class="w-full max-w-md">
+    <!-- Logo/Título -->
+    <div class="text-center mb-8">
+      <%= link_to root_path, class: "text-2xl font-bold text-indigo-600" do %>
+        Drivana
+      <% end %>
+    </div>
+
+    <!-- Card del formulario -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Iniciar Sesión</h2>
+
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <% if flash[:alert] %>
+          <div class="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-6">
+            <%= flash[:alert] %>
+          </div>
+        <% end %>
+
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <%= f.label :email, "Correo electrónico", class: "block font-medium text-gray-700" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", 
+                class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500", 
+                placeholder: "tu@email.com" %>
+          </div>
+
+          <div class="space-y-2">
+            <%= f.label :password, "Contraseña", class: "block font-medium text-gray-700" %>
+            <%= f.password_field :password, autocomplete: "current-password", 
+                class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
+          </div>
+
+          <% if devise_mapping.rememberable? %>
+            <div class="flex items-center gap-2">
+              <%= f.check_box :remember_me, class: "w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" %>
+              <span class="text-gray-700">Recordarme</span>
+            </div>
+          <% end %>
+
+          <%= f.submit "Iniciar sesión", class: "w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200" %>
+        </div>
+      <% end %>
+
+      <!-- Links adicionales -->
+      <div class="mt-6 text-center text-sm text-gray-600 space-y-2">
+        <% if devise_mapping.registerable? %>
+          <div>
+            ¿No tienes cuenta?
+            <%= link_to "Regístrate", new_registration_path(resource_name), 
+                class: "text-indigo-600 hover:text-indigo-800" %>
+          </div>
+        <% end %>
+        
+        <% if devise_mapping.recoverable? %>
+          <div>
+            <%= link_to "¿Olvidaste tu contraseña?", new_password_path(resource_name), 
+                class: "text-indigo-600 hover:text-indigo-800" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Botón de regreso -->
+    <div class="mt-8 text-center">
+      <%= link_to "Regresar al inicio", root_path, 
+          class: "text-gray-600 hover:text-gray-800" %>
+    </div>
+  </div>
+</div>

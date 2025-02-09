@@ -1,0 +1,10 @@
+<nav class="flex items-center space-x-4">
+  <% navigation_menu_items.each do |item| %>
+    <%= link_to item[:path],
+        class: "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium
+               #{item[:active] ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-100'}" do %>
+      <%= render_icon(item[:icon]) %>
+      <span><%= item[:title] %></span>
+    <% end %>
+  <% end %>
+</nav> 

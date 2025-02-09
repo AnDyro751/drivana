@@ -1,0 +1,11 @@
+<div id="nav-auth">
+  <% if user_signed_in? %>
+    <%= button_to destroy_user_session_path, method: :delete, class: "font-medium cursor-pointer btn btn-outline" do %>
+      Cerrar sesión
+    <% end %>
+  <% else %>
+    <button onclick="login_modal.showModal()" class="font-medium cursor-pointer btn btn-primary">
+      Registrate
+    </button>
+  <% end %>
+</div> 

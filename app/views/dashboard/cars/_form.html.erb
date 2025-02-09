@@ -1,0 +1,58 @@
+<%= form_with(model: [:dashboard, car], class: "space-y-6") do |f| %>
+  <% if car.errors.any? %>
+    <div class="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4">
+      <ul class="list-disc list-inside">
+        <% car.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="space-y-2">
+      <%= f.label :brand, "Marca", class: "block font-medium text-gray-700" %>
+      <%= f.text_field :brand, 
+          class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500",
+          placeholder: "ej. Toyota" %>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :model, "Modelo", class: "block font-medium text-gray-700" %>
+      <%= f.text_field :model, 
+          class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500",
+          placeholder: "ej. Corolla" %>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :year, "Año", class: "block font-medium text-gray-700" %>
+      <%= f.number_field :year, 
+          class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500",
+          placeholder: "ej. 2024",
+          min: 1900,
+          max: Time.current.year + 1 %>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :daily_rate, "Tarifa Diaria (MXN)", class: "block font-medium text-gray-700" %>
+      <%= f.number_field :daily_rate, 
+          class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500",
+          placeholder: "ej. 1000.00",
+          step: "0.01",
+          value: @car.daily_rate.to_f %>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :status, "Estado", class: "block font-medium text-gray-700" %>
+      <%= f.select :status, 
+          Car.statuses.keys.map { |s| [s.titleize, s] }, 
+          { prompt: "Selecciona un estado" }, 
+          class: "w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
+    </div>
+  </div>
+
+  <div class="flex justify-end space-x-2">
+    <%= link_to "Cancelar", dashboard_cars_path, class: "px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200" %>
+    <%= f.submit car.new_record? ? "Crear Vehículo" : "Actualizar Vehículo", class: "px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200" %>
+  </div>
+<% end %> 

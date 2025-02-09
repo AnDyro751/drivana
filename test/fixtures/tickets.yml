@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ticketable: one
+  issue_date: 2025-02-06 00:39:00
+  daily_rate: MyString
+  rental_days: 1
+  subtotal_rent: MyString
+  additional_charges: MyString
+  discounts: MyString
+  taxes: MyString
+  total_amount: MyString
+
+two:
+  ticketable: two
+  issue_date: 2025-02-06 00:39:00
+  daily_rate: MyString
+  rental_days: 1
+  subtotal_rent: MyString
+  additional_charges: MyString
+  discounts: MyString
+  taxes: MyString
+  total_amount: MyString

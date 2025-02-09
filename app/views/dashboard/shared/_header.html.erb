@@ -1,0 +1,28 @@
+<header class="bg-white shadow-md">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo y nombre del proyecto -->
+      <div class="flex items-center space-x-8">
+        <%= link_to dashboard_path, class: "flex items-center gap-2" do %>
+          <span class="text-2xl font-bold text-indigo-600">Drivana</span>
+        <% end %>
+
+        <!-- Menú de navegación -->
+        <%= render "dashboard/shared/navigation" %>
+      </div>
+
+      <!-- Menú derecho -->
+      <div class="flex items-center gap-4">
+        <div class="text-gray-600">
+          <%= current_user.email %>
+          <span class="text-xs text-gray-500">(<%= current_user.role.titleize %>)</span>
+        </div>
+        <%= button_to destroy_user_session_path, 
+            method: :delete,
+            class: "px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-200 font-medium" do %>
+          Cerrar sesión
+        <% end %>
+      </div>
+    </div>
+  </div>
+</header> 

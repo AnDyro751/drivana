@@ -1,0 +1,41 @@
+<div class="bg-white rounded-lg shadow-lg p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Reservar Vehículo</h1>
+    <%= link_to "Volver", dashboard_path, class: "px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200" %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Detalles del carro -->
+    <div class="space-y-6">
+      <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+        <div class="px-6 pt-6">
+          <%= image_tag "https://placehold.co/600x400?text=#{@car.brand}+#{@car.model}", 
+              class: "rounded-xl object-cover h-64 w-full" %>
+        </div>
+        <div class="p-6">
+          <h2 class="text-2xl font-bold mb-4"><%= "#{@car.brand} #{@car.model}" %></h2>
+          <div class="space-y-4">
+            <div>
+              <h3 class="font-medium text-gray-500">Año</h3>
+              <p class="text-lg"><%= @car.year %></p>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-500">Tarifa Diaria</h3>
+              <p class="text-2xl font-bold text-indigo-600">
+                <%= @car.daily_rate.format(symbol: true) %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario de reserva -->
+    <div class="bg-white rounded-xl shadow-xl">
+      <div class="p-6">
+        <h2 class="text-xl font-bold mb-6">Detalles de la Reserva</h2>
+        <%= render "dashboard/bookings/form", booking: Booking.new(car: @car) %>
+      </div>
+    </div>
+  </div>
+</div> 
