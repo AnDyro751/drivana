@@ -81,5 +81,5 @@ gem "pundit"
 gem 'simplecov', require: false, group: :test
 gem 'jsonapi-serializer'
 gem "tailwindcss-rails"
-gem "tailwindcss-ruby", "~> 3.4.13"
+gem "tailwindcss-ruby", "~> 4.0.5"
 gem "cssbundling-rails", "~> 1.4"
